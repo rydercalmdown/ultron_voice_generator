@@ -14,3 +14,7 @@ PyQt5
 multiprocess
 numba
 webrtcvad; platform_system != "Windows"
+flask
+torch
+torchvision
+gunicorn
