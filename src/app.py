@@ -22,7 +22,20 @@ from flask import Flask, jsonify, request, Response, send_file
 
 # Setup
 app = Flask(__name__)
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+if torch.cuda.is_available():
+    device_id = torch.cuda.current_device()
+    gpu_properties = torch.cuda.get_device_properties(device_id)
+    print("Found %d GPUs available. Using GPU %d (%s) of compute capability %d.%d with "
+        "%.1fGb total memory.\n" % 
+        (torch.cuda.device_count(),
+        device_id,
+        gpu_properties.name,
+        gpu_properties.major,
+        gpu_properties.minor,
+        gpu_properties.total_memory / 1e9))
+else:
+    print("Using CPU for inference.\n")
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""
 enc_model_fpath = Path('encoder/saved_models/pretrained.pt')
 syn_model_fpath = Path('synthesizer/saved_models/pretrained/pretrained.pt')
 voc_model_fpath = Path('vocoder/saved_models/pretrained/pretrained.pt')
